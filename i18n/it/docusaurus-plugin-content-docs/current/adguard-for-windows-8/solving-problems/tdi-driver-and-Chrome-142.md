@@ -1,25 +1,25 @@
 ---
-title: Filtering issues in Chrome 142+ when using the TDI driver
+title: Inghippi di filtraggio in Chrome 142 e successivi quando si usa il driver TDI
 sidebar_position: 1
 ---
 
 :::info
 
-This article describes AdGuard for Windows v8.0, a comprehensive ad blocker that protects your device at the system level. This is a beta release that is still under development. To try it, download the [beta version of AdGuard for Windows](https://agrd.io/windows_beta).
+Questo articolo descrive AdGuard per Windows v8.0, un blocca-inserzioni completo che protegge il tuo dispositivo a livello di sistema. Questo è una versione beta ancora in fase di sviluppo. Per provarlo, scarica la [versione beta di AdGuard per Windows](https://agrd.io/windows_beta).
 
 :::
 
-Some AdGuard for Windows users may notice that [the app stops filtering traffic in Chromium-based browsers](https://github.com/AdguardTeam/AdguardForWindows/issues/5771). Starting from Google Chrome 142+, browser traffic simply does not appear at the TDI driver level, preventing AdGuard from inspecting or filtering it.
+Alcuni utenti di AdGuard per Windows possono notare che [l'app smette di filtrare il traffico nei browser basati su Chromium](https://github.com/AdguardTeam/AdguardForWindows/issues/5771). A partire da Google Chrome 142, il traffico del browser semplicemente non appare più al livello del driver TDI, impedendo ad AdGuard d'ispezionarlo o filtrarne il traffico.
 
-This behavior is not a bug in AdGuard, but a result of recent architectural and security changes in modern browsers.
+Questo comportamento non è un errore di AdGuard, ma il risultato di recenti cambiamenti architetturali e di sicurezza nei browser moderni.
 
-## Why this happens
+## Perché accade ciò
 
-Chromium-based browsers (Chrome, Edge, Brave, Vivaldi, etc.) have been strengthening their security architecture. One significant change is moving sensitive internal processes into the [Windows AppContainer sandbox](https://learn.microsoft.com/en-us/windows/win32/secauthz/appcontainer-isolation), including the Network Service, which handles all browser traffic.
+Browser basati su Chromium (Chrome, Edge, Brave, Vivaldi, ecc.) hanno rafforzato la loro architettura di sicurezza. Una modifica significativa è spostare processi interni sensibili nell'[ambiente isolato Windows AppContainer](https://learn.microsoft.com/en-us/windows/win32/secauthz/appcontainer-isolation), incluso il servizio per la rete dedicata, che gestisce tutto il traffico del browser.
 
-### What changed in Chrome 142
+### Cosa è cambiato in Chrome 142
 
-Starting from Chrome 142, the Network Service process is now launched inside AppContainer by default.
+A partire da Chrome 142, il processo del servizio di rete dedicata è avviato all'interno di AppContainer come opzione prescelta.
 
 When this happens, applications running in an AppContainer do not use the legacy TDI networking interface; instead, their traffic is routed through the more modern WSK (Winsock Kernel) stack. As a result, the TDI driver cannot see, intercept, or process connections that go through WSK, and all browser traffic becomes invisible to the TDI driver used by AdGuard.
 

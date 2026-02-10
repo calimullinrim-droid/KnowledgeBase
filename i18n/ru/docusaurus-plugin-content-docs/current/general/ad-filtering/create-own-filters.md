@@ -391,7 +391,7 @@ Wildcard-символы поддерживаются для TLD-доменов �
 | [$app](#app-modifier)                               |                   ✅                   |                   ❌                    |                   ❌                    |                   ❌                    |                   ❌                    |                   ❌                    |                 ❌                 |
 | [$denyallow](#denyallow-modifier)                   |                   ✅                   |                   ✅                    |                   ✅                    |                   ✅                    |                   ✅                    |                   ✅                    |                 ❌                 |
 | [$domain](#domain-modifier)                         |                   ✅                   |                   ✅                    | ✅ [*[1]](#domain-modifier-limitations) |                   ✅                    | ✅ [*[1]](#domain-modifier-limitations) | ✅ [*[1]](#domain-modifier-limitations) |                 ✅                 |
-| [$header](#header-modifier)                         |                   ✅                   | ✅ [*[2]](#header-modifier-limitations) |                   ❌                    | ✅ [*[2]](#header-modifier-limitations) |                   ❌                    |                   ❌                    |                 ❌                 |
+| [$header](#header-modifier)                         |                   ✅                   | ✅ [*[2]](#header-modifier-limitations) | ✅ [*[2]](#header-modifier-limitations) | ✅ [*[2]](#header-modifier-limitations) |                   ❌                    |                   ❌                    |                 ❌                 |
 | [$important](#important-modifier)                   |                   ✅                   |                   ✅                    |                   ✅                    |                   ✅                    |                   ✅                    |                   ✅                    |                 ❌                 |
 | [$match-case](#match-case-modifier)                 |                   ✅                   |                   ✅                    |                   ✅                    |                   ✅                    |                   ✅                    |                   ✅                    |                 ✅                 |
 | [$method](#method-modifier)                         |                   ✅                   |                   ✅                    |                   ✅                    |                   ✅                    | ✅ [*[2]](#method-modifier-limitations) | ✅ [*[2]](#method-modifier-limitations) |                 ❌                 |
@@ -630,11 +630,13 @@ The modifier part, `":" h_value`, may be omitted. In that case, the modifier mat
 
 1. In AdGuard Browser Extension, the `$header` modifier is only compatible with [`$csp`](#csp-modifier), [`$removeheader`](#removeheader-modifier) (response headers only), [`$important`](#important-modifier), [`$badfilter`](#badfilter-modifier), [`$domain`](#domain-modifier), [`$third-party`](#third-party-modifier), [`$match-case`](#match-case-modifier), and [content-type modifiers](#content-type-modifiers) such as [`$script`](#script-modifier) and [`$stylesheet`](#stylesheet-modifier). The rules with other modifiers are considered invalid and will be discarded.
 
+1. In AdGuard Browser Extension MV3, regular expressions in the `$header` modifier values are not supported.
+
 :::
 
 :::info Совместимость
 
-Rules with the `$header` modifier are supported by AdGuard for Windows, AdGuard for Mac, AdGuard for Android, and AdGuard for Linux with [CoreLibs][] v1.11 or later, and AdGuard Browser Extension with [TSUrlFilter][] v3.0.0 or later.
+Rules with the `$header` modifier are supported by AdGuard for Windows, AdGuard for Mac, AdGuard for Android, and AdGuard for Linux with [CoreLibs][] v1.11 or later, AdGuard Browser Extension with [TSUrlFilter][] v3.0.0 or later, and AdGuard Browser Extension MV3 v5.3 or later.
 
 :::
 
@@ -2753,7 +2755,7 @@ This modifier completely changes the rule behavior. If it is applied, the rule w
 
 You will need some knowledge of regular expressions to use `$replace` modifier.
 
-**Features**
+**Функции**
 
 - Правила с `$replace` применяются к любому текстовому ответу, но не применяются к binary (`media`, `image`, `object` и т. д.).
 - Правила с `$replace` не применяются к ответам размером больше 10 МБ.
@@ -2826,7 +2828,7 @@ Rules with `$replace` modifier are supported by AdGuard for Windows, AdGuard for
 
 The `$urltransform` rules allow you to modify the request URL by replacing text matched by a regular expression.
 
-**Features**
+**Функции**
 
 - Правила `$urltransform` обычно применяются только к частям URL-адреса, относящимся к пути и запросу, одно исключение см. ниже.
 - `$urltransform` не будет применяться, если исходный URL-адрес заблокирован другими правилами.
@@ -2840,17 +2842,30 @@ If multiple `$urltransform` rules match a single request, we will apply each of 
 
 **Syntax**
 
-`$urltransform` syntax is similar to replacement with regular expressions [in Perl](http://perldoc.perl.org/perlrequick.html#Search-and-replace).
+`$urltransform` value is a series of one or more transformations separated by `|`. The first transformation is applied to the input URL. Each of the following transformations is applied to the output of the previous one. The output of a failed transformation (for example, if Base64 decoding failed or if substitution found no matches) is its input, unchanged. Formally:
 
 ```text
-urltransform = "/" regexp "/" replacement "/" modifiers
+urltransform = transforms
+transforms = transform | transform "|" transforms
+transform = substitute | decode
+substitute = "/" regexp "/" replacement "/" modifiers
+decode = "b64" | "pct"
 ```
 
-- **`regexp`** — регулярное выражение.
+- **`substitute`** is similar to replacement with regular expressions [in Perl](https://perldoc.perl.org/perlrequick.html#Search-and-replace).
+    - **`regexp`** — регулярное выражение.
+    - **`replacement`** — a string that replaces whatever is matched by `regexp`. `$1`, `$2`, etc. in the replacement string are replaced with the contents of the corresponding capture group.
+    - **`modifiers`** — regular expression flags, e.g., `i` for case-insensitive search.
 - **`replacement`** — строка, которая будет использована для замены строки в соответствии с `regexp`.
-- **`modifiers `** — флаги регулярных выражений. Например, `i` — поиск без учёта регистра, `s` — режим одной строки.
+- **`pct`** — decodes a [percent-encoded](https://datatracker.ietf.org/doc/html/rfc3986#section-2.1) string.
 
 In the `$urltransform` value, two characters must be escaped: the comma `,` and the dollar sign `$`. Use the backslash character `\` for this. For example, an escaped comma looks like this: `\,`.
+
+:::info Совместимость
+
+AdGuard products that use a [CoreLibs][] version older than 1.20 only support a single `substitute` transformation for the value of the `$urltransform` modifier.
+
+:::
 
 **Changing the origin**
 
@@ -4654,6 +4669,33 @@ If `pattern` is not set for `$path`, rule will apply only on the main page of we
 - `[$path]example.com##.textad` скрывает `div` с классом `textad` на главной странице `example.com`
 - `[$domain=example.com,path=/page.html]##.textad` скрывает `div` с классом `textad` на `page.html` домена `example.com` и всех его поддоменах, но не на `another_page.html`
 - `[$path=/\\/(sub1|sub2)\\/page\\.html/]##.textad` скрывает `div` с классом `textad` как на `/sub1/page.html`, так и на `/sub2/page.html` любого домена (обратите внимание на [специальные экранированные символы](#non-basic-rules-modifiers-syntax))
+
+#### Path-in-domain syntax {#path-in-domain-syntax}
+
+For cosmetic rules, you can use a simplified path-in-domain syntax by specifying the path directly in the domain part of the rule instead of using the `$path` modifier.
+
+**Syntax**
+
+```text
+   rule = [targets] "##" selector
+targets = [target0, target1[, ...[, targetN]]]
+ target = domain [path]
+```
+
+**Примеры:**
+
+- `example.org/checkout##.promo-banner` — hides `.promo-banner` elements only on checkout pages
+- `news.site.com/article##.sidebar-ad` — hides sidebar ads only on article pages
+- `domain1.com,example.org/path##.banner` — applies to all pages on `domain1.com` and only `/path` pages on `example.org`
+- `/example\.org\/article\d+/##.ad` — hides ads on article pages with numeric IDs
+
+Path-in-domain syntax works with all types of cosmetic rules (`##`, `#@#`, `#$#`, `$$`, `$@$`, `#%#`, `#@%#`)
+
+:::info Совместимость
+
+Path-in-domain syntax has been introduced in [CoreLibs][] v1.20.
+
+:::
 
 #### `$path` modifier limitations {#non-basic-path-modifier-limitations}
 

@@ -5,7 +5,7 @@ sidebar_position: 4
 
 :::info
 
-This article describes AdGuard for Windows v8.0, a comprehensive ad blocker that protects your device at the system level. This is a beta release that is still under development. To try it, download the [beta version of AdGuard for Windows](https://agrd.io/windows_beta).
+Questo articolo descrive AdGuard per Windows v8.0, un blocca-inserzioni completo che protegge il tuo dispositivo a livello di sistema. Questo è una versione beta ancora in fase di sviluppo. Per provarlo, scarica la [versione beta di AdGuard per Windows](https://agrd.io/windows_beta).
 
 :::
 
@@ -33,15 +33,15 @@ When enabled, AdGuard will automatically detect filter subscription links (like 
 
 With this option enabled, AdGuard reroutes all your traffic to a local proxy server for filtering.
 
-If it’s turned off, AdGuard filters traffic directly — without redirecting it. In this mode, Windows sees AdGuard as the only app connecting to the Internet, since all other apps go through it. This can slightly improve performance but may reduce the effectiveness of the system firewall.
+Se è spento, AdGuard filtra il traffico direttamente — senza reindirizzarlo. In questa modalità, Windows vede AdGuard come l'unica app che si connette alla rete globale, poiché tutte le altre app passano attraverso di essa. Ciò può migliorare leggermente le prestazioni, ma potrebbe ridurre l'efficacia del firewall di sistema.
 
-## Open AdGuard at system start-up
+## Apri AdGuard all'avvio del sistema
 
-Enable this option to launch the AdGuard window automatically when your PC starts.
+Abilita questa opzione per lanciare automaticamente la finestra di AdGuard all'avvio del PC.
 
 ## Abilita il filtraggio all'avvio del sistema
 
-Since version 7.12, AdGuard doesn’t start filtering traffic automatically after you boot your PC — unless the _Launch AdGuard at system start-up_ option is enabled. Instead, it runs in a passive “idle” mode.
+A partire dalla versione 7.12, AdGuard non inizia a filtrare automaticamente il traffico dopo l'avvio del PC, a meno che non sia abilitata l'opzione _Avvia AdGuard all'avvio del sistema_. Invece, funziona in modalità passiva "inerte".
 
 Turning this on allows AdGuard to filter traffic immediately, even if the app hasn’t been opened yet.
 
@@ -67,7 +67,7 @@ Using the _Block Java_ option does not affect JavaScript — it will remain enab
 
 ## Blocking mode for DNS rules
 
-Choose how AdGuard responds when a domain is blocked by a DNS rule based on the [hosts-style syntax](https://adguard-dns.io/kb/general/dns-filtering-syntax/#etc-hosts-syntax).
+Scegli come AdGuard risponde quando un dominio è bloccato da una regola DNS basata sulla [sintassi in stile hosts](https://adguard-dns.io/kb/general/dns-filtering-syntax/#etc-hosts-syntax).
 
 - Return a `REFUSED` error
 - Return a `NXDOMAIN` error
