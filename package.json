@@ -14,7 +14,8 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "lint:md": "markdownlint-cli2",
     "crowdin": "crowdin",
-    "crowdin:sync": "docusaurus write-translations && crowdin upload && crowdin download --export-only-approved"
+    "crowdin:sync": "docusaurus write-translations && crowdin upload && crowdin download --export-only-approved",
+    "bench": "vitest bench --run"
   },
   "dependencies": {
     "@crowdin/cli": "3.13.0",
@@ -45,8 +46,10 @@
     ]
   },
   "devDependencies": {
+    "@codspeed/vitest-plugin": "^6.1.0",
     "@docusaurus/utils": "^2.2.0",
     "markdownlint": "^0.37.4",
-    "markdownlint-cli2": "^0.17.2"
+    "markdownlint-cli2": "^0.17.2",
+    "vitest": "^5.0.5"
   }
 }

@@ -1,5 +1,7 @@
 # Website
 
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://app.codspeed.io/calimullinrim-droid/KnowledgeBase?utm_source=badge)
+
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
 `master` branch is published automatically to https://kb-adg.pages.dev/.
@@ -61,5 +63,11 @@ Here's how you can debug translations locally.
 
 1. Download translations: `CROWDIN_PERSONAL_TOKEN="YOURTOKEN" pnpm run crowdin download`
 2. Run Docusaurus with the language of your choice: `pnpm run start -- --locale de`
+
+## Benchmarks
+
+Performance benchmarks for the markdown linting (including the custom `no-duplicate-docusaurus-ids` rule) live in the `bench` directory and are tracked continuously with [CodSpeed](https://codspeed.io).
+
+- `pnpm bench`
 
 [vscode-markdownlint]: https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint
